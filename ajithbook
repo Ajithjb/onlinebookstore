@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('clone') {
+            steps {
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/raghudeveloptrees/onlinebookstore '
+            }
+        }
+         stage('build') {
+            steps {
+            sh 'mvn clean package'
+            }
+        }
+        stage('deploy') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'f17de384-2941-47a2-ab8b-8f6866e57639', path: '', url: 'http://16.170.230.126:8080')], contextPath: 'ajithbook', onFailure: false, war: '**/*.war'
+            
+            }
+        }
+    }
+}
